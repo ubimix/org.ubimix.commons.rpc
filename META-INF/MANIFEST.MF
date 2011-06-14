@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Export-Package: org.webreformatter.commons.rpc;version="1.1.3"
+Bundle-Version: 1.1.3
+Bundle-Name: org.webreformatter.commons.rpc
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0
+Bundle-Description: WebReformatter RPC 
+Bundle-SymbolicName: org.webreformatter.commons.rpc
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: org.webreformatter.commons.events;version="1.1.3",
+ org.webreformatter.commons.events.calls;version="1.1.3",
+ org.webreformatter.commons.json;version="1.1.3",
+ org.webreformatter.commons.json.rpc;version="1.1.3"
