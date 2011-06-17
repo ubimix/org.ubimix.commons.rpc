@@ -44,13 +44,6 @@ public class RpcEventToCallTranslator extends CallListener<RpcEvent> {
         fMethodProvider = methodProvider;
     }
 
-    private Throwable getException(RpcError error) {
-        return new RuntimeException("Error "
-            + error.getCode()
-            + ". "
-            + error.getMessage());
-    }
-
     @Override
     protected void handleRequest(final RpcEvent event) {
         JsonObject params = event.getRequest();
@@ -64,8 +57,7 @@ public class RpcEventToCallTranslator extends CallListener<RpcEvent> {
             public void finish(RpcResponse response) {
                 RpcError error = response.getError();
                 if (error != null) {
-                    Throwable t = getException(error);
-                    event.setResponse(t);
+                    event.setError(error);
                 } else {
                     JsonObject result = response.getResultObject();
                     event.setResponse(result);

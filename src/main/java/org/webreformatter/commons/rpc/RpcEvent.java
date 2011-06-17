@@ -5,6 +5,9 @@ package org.webreformatter.commons.rpc;
 
 import org.webreformatter.commons.events.calls.CallEvent;
 import org.webreformatter.commons.json.JsonObject;
+import org.webreformatter.commons.json.JsonValue;
+import org.webreformatter.commons.json.JsonValue.IJsonValueFactory;
+import org.webreformatter.commons.json.rpc.RpcError;
 
 /**
  * @author kotelnikov
@@ -24,6 +27,33 @@ public abstract class RpcEvent extends CallEvent<JsonObject, JsonObject> {
         super(request);
     }
 
+    public RpcError getError() {
+        RpcError error = null;
+        JsonObject response = getResponse();
+        if (response != null) {
+            error = response.getValue("error", RpcError.FACTORY);
+        }
+        return error;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends JsonValue> T getRequestValue() {
+        return (T) getRequest();
+    }
+
+    public <T extends JsonObject> T getResponseAs(IJsonValueFactory<T> factory) {
+        JsonObject response = getResponse();
+        if (response == null) {
+            return null;
+        }
+        return factory.newValue(response.getJsonObject());
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends JsonValue> T getResponseValue() {
+        return (T) getResponse();
+    }
+
     public boolean isCachedResponse() {
         return fCachedResponse;
     }
@@ -32,9 +62,15 @@ public abstract class RpcEvent extends CallEvent<JsonObject, JsonObject> {
         fCachedResponse = cached;
     }
 
-    public void setResponse(Throwable t) {
+    public void setError(RpcError error) {
+        JsonObject json = new JsonObject();
+        json.setValue("error", error);
+        setResponse(json);
+    }
+
+    public void setError(Throwable t) {
         onError(t);
-        JsonObject error = new JsonObject();
+        RpcError error = new RpcError();
         StringBuilder buf = new StringBuilder();
         StackTraceElement[] stackTrace = t.getStackTrace();
         for (StackTraceElement e : stackTrace) {
@@ -54,8 +90,6 @@ public abstract class RpcEvent extends CallEvent<JsonObject, JsonObject> {
             .setValue("code", 505)
             .setValue("message", t.getMessage())
             .setValue("stackTrace", buf.toString());
-        JsonObject json = new JsonObject();
-        json.setValue("error", error);
-        setResponse(json);
+        setError(error);
     }
 }
