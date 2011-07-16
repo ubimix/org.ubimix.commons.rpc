@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 
+import org.webreformatter.commons.events.EventListenerRegistry;
 import org.webreformatter.commons.events.EventManager;
 import org.webreformatter.commons.events.IEventManager;
 import org.webreformatter.commons.events.calls.CallListener;
@@ -118,19 +119,32 @@ public class RpcEventHandlerTest extends TestCase {
      * 
      */
     public void testClientServer() {
-        IEventManager clientEventManager = new EventManager();
         IRpcMethodProvider methodProvider = new DefaultRpcMethodProvider();
+        IEventManager clientEventManager = new EventManager();
+        IEventManager serverEventManager;
+        {
+            final EventListenerRegistry listenerRegistry = new EventListenerRegistry();
+            serverEventManager = new EventManager(listenerRegistry);
 
-        // "Transport" layer
-        RpcEventListenerRegistry listenerRegistry = new RpcEventListenerRegistry(
-            methodProvider);
-        RpcCallToEventTranslator callToEvent = new RpcCallToEventTranslator(
-            listenerRegistry);
-        RpcEventToCallTranslator eventToCall = new RpcEventToCallTranslator(
-            callToEvent,
-            methodProvider);
+            RpcEventListenerInterceptor rpcInterceptor = new RpcEventListenerInterceptor(
+                methodProvider);
+            listenerRegistry.addListenerInterceptor(rpcInterceptor);
 
-        listenerRegistry.addListener(
+            // Initialization of the "transport" layer
+
+            // Server-side code. Translates RPC calls to events.
+            RpcCallToEventTranslator callToEvent = new RpcCallToEventTranslator(
+                rpcInterceptor,
+                serverEventManager);
+
+            // Client-side code. Translates events to RPC calls.
+            RpcEventToCallTranslator eventToCall = new RpcEventToCallTranslator(
+                callToEvent,
+                methodProvider);
+            clientEventManager.addListener(RpcEvent.class, eventToCall);
+        }
+
+        serverEventManager.addListener(
             MyMethod.class,
             new CallListener<MyMethod>() {
                 @Override
@@ -144,7 +158,6 @@ public class RpcEventHandlerTest extends TestCase {
                     event.setResponse(response);
                 }
             });
-        clientEventManager.addListener(RpcEvent.class, eventToCall);
 
         String firstName = "John";
         String lastName = "Smith";
@@ -179,10 +192,16 @@ public class RpcEventHandlerTest extends TestCase {
         FutureTask<Object> server = new FutureTask<Object>(
             new Callable<Object>() {
                 public Object call() throws Exception {
-                    RpcEventListenerRegistry listenerRegistry = new RpcEventListenerRegistry(
+                    RpcEventListenerInterceptor rpcListenerRegistry = new RpcEventListenerInterceptor(
                         methodProvider);
+                    EventListenerRegistry listenerRegistry = new EventListenerRegistry();
+                    listenerRegistry
+                        .addListenerInterceptor(rpcListenerRegistry);
+                    IEventManager eventManager = new EventManager(
+                        listenerRegistry);
+
                     // Prepare the server-side stuff
-                    listenerRegistry.addListener(
+                    eventManager.addListener(
                         MyMethod.class,
                         new CallListener<MyMethod>() {
                             @Override
@@ -204,7 +223,8 @@ public class RpcEventHandlerTest extends TestCase {
                         String str = readString(input);
                         RpcRequest request = new RpcRequest(str);
                         RpcCallToEventTranslator serverHandler = new RpcCallToEventTranslator(
-                            listenerRegistry);
+                            rpcListenerRegistry,
+                            eventManager);
                         serverHandler.handle(request, new IRpcCallback() {
                             public void finish(RpcResponse response) {
                                 JsonValue result = response.getResultAsJson();
@@ -299,12 +319,15 @@ public class RpcEventHandlerTest extends TestCase {
 
     public void testRpcEventListenerRegistry() {
         IRpcMethodProvider methodProvider = new DefaultRpcMethodProvider();
-        RpcEventListenerRegistry registry = new RpcEventListenerRegistry(
+
+        RpcEventListenerInterceptor rpcListenerRegistry = new RpcEventListenerInterceptor(
             methodProvider);
+        final EventListenerRegistry registry = new EventListenerRegistry();
+        registry.addListenerInterceptor(rpcListenerRegistry);
         registry.addListener(MyMethod.class, new CallListener<MyMethod>() {
         });
         String methodName = methodProvider.getMethodName(MyMethod.class);
-        Class<?> type = registry.getEventType(methodName);
+        Class<?> type = rpcListenerRegistry.getEventType(methodName);
         assertSame(MyMethod.class, type);
     }
 
@@ -323,24 +346,25 @@ public class RpcEventHandlerTest extends TestCase {
      * @throws Exception
      */
     public void testServer() throws Exception {
-        // IEventManager eventManager = new EventManager();
+        final EventListenerRegistry registry = new EventListenerRegistry();
         IRpcMethodProvider methodProvider = new DefaultRpcMethodProvider();
-        RpcEventListenerRegistry listenerRegistry = new RpcEventListenerRegistry(
+        RpcEventListenerInterceptor rpcListenerRegistry = new RpcEventListenerInterceptor(
             methodProvider);
-        listenerRegistry.addListener(
-            MyMethod.class,
-            new CallListener<MyMethod>() {
-                @Override
-                protected void handleRequest(MyMethod event) {
-                    JsonObject request = event.getRequest();
-                    JsonObject response = new JsonObject();
-                    String message = getMessage(
-                        request.getString("firstName"),
-                        request.getString("lastName"));
-                    response.setValue("message", message);
-                    event.setResponse(response);
-                }
-            });
+        IEventManager eventManager = new EventManager(registry);
+        registry.addListenerInterceptor(rpcListenerRegistry);
+
+        eventManager.addListener(MyMethod.class, new CallListener<MyMethod>() {
+            @Override
+            protected void handleRequest(MyMethod event) {
+                JsonObject request = event.getRequest();
+                JsonObject response = new JsonObject();
+                String message = getMessage(
+                    request.getString("firstName"),
+                    request.getString("lastName"));
+                response.setValue("message", message);
+                event.setResponse(response);
+            }
+        });
 
         String firstName = "John";
         String lastName = "Smith";
@@ -352,7 +376,8 @@ public class RpcEventHandlerTest extends TestCase {
 
         final String[] testResult = { null };
         RpcCallToEventTranslator handlers = new RpcCallToEventTranslator(
-            listenerRegistry);
+            rpcListenerRegistry,
+            eventManager);
         handlers.handle(request, new IRpcCallback() {
             public void finish(RpcResponse response) {
                 JsonObject result = response.getResultObject();

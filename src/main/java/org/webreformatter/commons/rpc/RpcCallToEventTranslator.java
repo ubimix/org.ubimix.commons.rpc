@@ -2,6 +2,7 @@ package org.webreformatter.commons.rpc;
 
 import java.util.Set;
 
+import org.webreformatter.commons.events.EventListenerRegistry;
 import org.webreformatter.commons.events.EventManager;
 import org.webreformatter.commons.events.IEventManager;
 import org.webreformatter.commons.events.calls.CallListener;
@@ -13,7 +14,7 @@ import org.webreformatter.commons.json.rpc.RpcResponse;
 
 /**
  * This class translates RPC calls to {@link RpcEvent} events. It uses
- * {@link RpcEventListenerRegistry} to translate method names to corresponding
+ * {@link RpcEventListenerInterceptor} to translate method names to corresponding
  * event types. This class does the opposite operation with the
  * {@link RpcEventToCallTranslator}.
  * 
@@ -24,14 +25,17 @@ public class RpcCallToEventTranslator implements IRpcCallHandler {
 
     private IEventManager fEventManager;
 
-    private RpcEventListenerRegistry fEventsRegistry;
+    private RpcEventListenerInterceptor fEventsRegistry;
 
-    public RpcCallToEventTranslator(RpcEventListenerRegistry methodRegistry) {
-        this(methodRegistry, new EventManager(methodRegistry));
+    private RpcCallToEventTranslator(RpcEventListenerInterceptor methodRegistry) {
+        fEventsRegistry = methodRegistry;
+        EventListenerRegistry listenerRegistry = new EventListenerRegistry();
+        listenerRegistry.addListenerInterceptor(methodRegistry);
+        fEventManager = new EventManager(listenerRegistry);
     }
 
     public RpcCallToEventTranslator(
-        RpcEventListenerRegistry eventsRegistry,
+        RpcEventListenerInterceptor eventsRegistry,
         IEventManager eventManager) {
         fEventManager = eventManager;
         fEventsRegistry = eventsRegistry;
@@ -40,7 +44,7 @@ public class RpcCallToEventTranslator implements IRpcCallHandler {
     /**
      * This method creates and fires a new {@link RpcEvent} event each RPC call.
      * To translate method names to {@link RpcEvent} event types it uses an
-     * internal {@link RpcEventListenerRegistry} instance.
+     * internal {@link RpcEventListenerInterceptor} instance.
      * 
      * @see org.webreformatter.commons.json.rpc.IRpcCallHandler#handle(org.webreformatter.commons.json.rpc.RpcRequest,
      *      org.webreformatter.commons.json.rpc.IRpcCallHandler.IRpcCallback)
