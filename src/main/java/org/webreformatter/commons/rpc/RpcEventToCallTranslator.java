@@ -38,8 +38,8 @@ public class RpcEventToCallTranslator extends CallListener<RpcEvent> {
      * 
      */
     public RpcEventToCallTranslator(
-        IRpcCallHandler handler,
-        IRpcMethodProvider methodProvider) {
+        IRpcMethodProvider methodProvider,
+        IRpcCallHandler handler) {
         fHandler = handler;
         fMethodProvider = methodProvider;
     }

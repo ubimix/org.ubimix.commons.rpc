@@ -139,8 +139,8 @@ public class RpcEventHandlerTest extends TestCase {
 
             // Client-side code. Translates events to RPC calls.
             RpcEventToCallTranslator eventToCall = new RpcEventToCallTranslator(
-                callToEvent,
-                methodProvider);
+                methodProvider,
+                callToEvent);
             clientEventManager.addListener(RpcEvent.class, eventToCall);
         }
 
@@ -276,8 +276,8 @@ public class RpcEventHandlerTest extends TestCase {
                             }
                         };
                         RpcEventToCallTranslator clientHandler = new RpcEventToCallTranslator(
-                            clientCallHandler,
-                            methodProvider);
+                            methodProvider,
+                            clientCallHandler);
                         clientEventManager.addListener(
                             RpcEvent.class,
                             clientHandler);
