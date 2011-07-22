@@ -3,8 +3,8 @@ package org.webreformatter.commons.rpc;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.webreformatter.commons.events.EventListenerRegistry.IEventListenerInterceptor;
 import org.webreformatter.commons.events.IEventListener;
+import org.webreformatter.commons.events.IEventListenerInterceptor;
 import org.webreformatter.commons.events.IEventListenerRegistry;
 
 /**
