@@ -121,14 +121,11 @@ public class RpcEventHandlerTest extends TestCase {
     public void testClientServer() {
         IRpcMethodProvider methodProvider = new DefaultRpcMethodProvider();
         IEventManager clientEventManager = new EventManager();
-        IEventManager serverEventManager;
+        IEventManager serverEventManager = new EventManager();
         {
-            final EventListenerRegistry listenerRegistry = new EventListenerRegistry();
-            serverEventManager = new EventManager(listenerRegistry);
-
             RpcEventListenerInterceptor rpcInterceptor = new RpcEventListenerInterceptor(
                 methodProvider);
-            listenerRegistry.addListenerInterceptor(rpcInterceptor);
+            serverEventManager.addListenerInterceptor(rpcInterceptor);
 
             // Initialization of the "transport" layer
 
