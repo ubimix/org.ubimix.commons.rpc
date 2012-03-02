@@ -2,8 +2,6 @@ package org.webreformatter.commons.rpc;
 
 import java.util.Set;
 
-import org.webreformatter.commons.events.EventListenerRegistry;
-import org.webreformatter.commons.events.EventManager;
 import org.webreformatter.commons.events.IEventManager;
 import org.webreformatter.commons.events.calls.CallListener;
 import org.webreformatter.commons.json.JsonObject;
@@ -14,8 +12,8 @@ import org.webreformatter.commons.json.rpc.RpcResponse;
 
 /**
  * This class translates RPC calls to {@link RpcEvent} events. It uses
- * {@link RpcEventListenerInterceptor} to translate method names to corresponding
- * event types. This class does the opposite operation with the
+ * {@link RpcEventListenerInterceptor} to translate method names to
+ * corresponding event types. This class does the opposite operation with the
  * {@link RpcEventToCallTranslator}.
  * 
  * @author kotelnikov
@@ -26,13 +24,6 @@ public class RpcCallToEventTranslator implements IRpcCallHandler {
     private IEventManager fEventManager;
 
     private RpcEventListenerInterceptor fEventsRegistry;
-
-    private RpcCallToEventTranslator(RpcEventListenerInterceptor methodRegistry) {
-        fEventsRegistry = methodRegistry;
-        EventListenerRegistry listenerRegistry = new EventListenerRegistry();
-        listenerRegistry.addListenerInterceptor(methodRegistry);
-        fEventManager = new EventManager(listenerRegistry);
-    }
 
     public RpcCallToEventTranslator(
         RpcEventListenerInterceptor eventsRegistry,

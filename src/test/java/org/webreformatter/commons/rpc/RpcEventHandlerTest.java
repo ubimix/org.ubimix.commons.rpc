@@ -152,7 +152,7 @@ public class RpcEventHandlerTest extends TestCase {
                         request.getString("firstName"),
                         request.getString("lastName"));
                     response.setValue("message", message);
-                    event.setResponse(response);
+                    event.reply(response);
                 }
             });
 
@@ -209,7 +209,7 @@ public class RpcEventHandlerTest extends TestCase {
                                     request.getString("firstName"),
                                     request.getString("lastName"));
                                 response.setValue("message", message);
-                                event.setResponse(response);
+                                event.reply(response);
                             }
                         });
 
@@ -359,7 +359,7 @@ public class RpcEventHandlerTest extends TestCase {
                     request.getString("firstName"),
                     request.getString("lastName"));
                 response.setValue("message", message);
-                event.setResponse(response);
+                event.reply(response);
             }
         });
 

@@ -60,7 +60,7 @@ public class RpcEventToCallTranslator extends CallListener<RpcEvent> {
                     event.setError(error);
                 } else {
                     JsonObject result = response.getResultObject();
-                    event.setResponse(result);
+                    event.reply(result);
                 }
             }
 

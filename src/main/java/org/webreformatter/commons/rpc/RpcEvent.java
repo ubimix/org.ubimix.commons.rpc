@@ -65,7 +65,7 @@ public abstract class RpcEvent extends CallEvent<JsonObject, JsonObject> {
     public void setError(RpcError error) {
         JsonObject json = new JsonObject();
         json.setValue("error", error);
-        setResponse(json);
+        reply(json);
     }
 
     public void setError(Throwable t) {
