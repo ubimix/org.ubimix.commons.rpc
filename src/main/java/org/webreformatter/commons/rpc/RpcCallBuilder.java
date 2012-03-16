@@ -30,9 +30,7 @@ public class RpcCallBuilder implements IRpcCallBuilder {
          *      org.webreformatter.commons.events.IEventListener)
          */
         @Override
-        public void onAddListener(
-            Class<?> eventType,
-            IEventListener<?> listener) {
+        public void onAddListener(Class<?> eventType, IEventListener<?> listener) {
             if (RpcCall.class.isAssignableFrom(eventType)) {
                 Class<? extends RpcCall> type = castEventType(eventType);
                 String methodName = getMethodName(type);
@@ -69,8 +67,8 @@ public class RpcCallBuilder implements IRpcCallBuilder {
     }
 
     /**
-     * This method translates types of events in corresponding RPC method
-     * names. It can be overloaded in subclasses.
+     * This method translates types of events in corresponding RPC method names.
+     * It can be overloaded in subclasses.
      * 
      * @param type the type of the event
      * @return an RPC method name corresponding to the specified event type
@@ -79,18 +77,24 @@ public class RpcCallBuilder implements IRpcCallBuilder {
         return RpcCall.getMethodName(type);
     }
 
+    /**
+     * @see org.webreformatter.commons.rpc.IRpcCallBuilder#newRpcCall(org.webreformatter.commons.json.rpc.RpcRequest)
+     */
     public RpcCall newRpcCall(RpcRequest request) throws Exception {
+        RpcCall result = null;
         String methodName = request.getMethod();
         Class<?> type = getEventType(methodName);
-        if (type == null) {
-            return null;
+        if (type != null) {
+            Constructor<?> constructor = type.getConstructor(RpcRequest.class);
+            if (constructor != null) {
+                result = (RpcCall) constructor.newInstance(request);
+            } else {
+                constructor = type.getConstructor();
+                result = (RpcCall) constructor.newInstance();
+                result.setRequest(request);
+            }
         }
-        Constructor<?> constructor = type.getConstructor(RpcRequest.class);
-        if (constructor == null) {
-            return null;
-        }
-        RpcCall event = (RpcCall) constructor.newInstance(request);
-        return event;
+        return result;
     }
 
 }
