@@ -17,7 +17,11 @@ import org.webreformatter.commons.rpc.SandboxNamespace.SayHello;
  */
 public class RpcCallsDispatcherTest extends TestCase {
 
+    private RpcCallsDispatcher fClientDispatcher = new RpcCallsDispatcher();
+
     protected IEventManager fClientEventManager = new EventManager();
+
+    private RpcCallsDispatcher fServerDispatcher = new RpcCallsDispatcher();
 
     protected IEventManager fServerEventManager = new EventManager();
 
@@ -30,8 +34,6 @@ public class RpcCallsDispatcherTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        RpcCallsDispatcher clientDispatcher = new RpcCallsDispatcher();
-        RpcCallsDispatcher serverDispatcher = new RpcCallsDispatcher();
         final RpcMessenger[] clientConnector = { null };
         final RpcMessenger[] serverConnector = { null };
         clientConnector[0] = new RpcMessenger() {
@@ -46,8 +48,14 @@ public class RpcCallsDispatcherTest extends TestCase {
                 clientConnector[0].onMessage(msg);
             }
         };
-        clientDispatcher.init(fClientEventManager, clientConnector[0]);
-        serverDispatcher.init(fServerEventManager, serverConnector[0]);
+        fClientDispatcher.init(fClientEventManager, clientConnector[0]);
+        fServerDispatcher.init(fServerEventManager, serverConnector[0]);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        fClientDispatcher.done();
+        fServerDispatcher.done();
     }
 
     /**

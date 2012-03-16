@@ -1,11 +1,10 @@
 package org.webreformatter.commons.rpc;
 
-import java.lang.reflect.Constructor;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.webreformatter.commons.events.IEventListener;
-import org.webreformatter.commons.events.IEventListenerInterceptor;
 import org.webreformatter.commons.events.IEventManager;
 import org.webreformatter.commons.events.calls.CallListener;
 import org.webreformatter.commons.json.JsonObject;
@@ -144,54 +143,30 @@ public class RpcCallsDispatcher {
      */
     private Map<String, RpcCall> fCalls = new HashMap<String, RpcCall>();
 
-    private Map<String, Class<?>> fCallTypes = new HashMap<String, Class<?>>();
+    private Class<? extends RpcCall> fCallType;
 
     private IEventManager fEventManager;
 
-    private IEventListenerInterceptor fListenerInterceptor = new IEventListenerInterceptor() {
-        /**
-         * @see org.webreformatter.commons.events.IEventListenerInterceptor#onAddListener(java.lang.Class,
-         *      org.webreformatter.commons.events.IEventListener)
-         */
-        public void onAddListener(Class<?> eventType, IEventListener<?> listener) {
-            if (RpcCall.class.isAssignableFrom(eventType)) {
-                Class<? extends RpcCall> type = castEventType(eventType);
-                String methodName = getMethodName(type);
-                if (methodName != null) {
-                    fCallTypes.put(methodName, eventType);
-                }
-            }
-        }
+    private String fIdBase = "id-" + (new Date().getTime()) + "-";
 
-        /**
-         * @see org.webreformatter.commons.events.IEventListenerInterceptor#onRemoveListener(java.lang.Class,
-         *      org.webreformatter.commons.events.IEventListener)
-         */
-        public void onRemoveListener(
-            Class<?> eventType,
-            IEventListener<?> listener) {
-            if (RpcCall.class.isAssignableFrom(eventType)) {
-                Class<? extends RpcCall> type = castEventType(eventType);
-                String methodName = getMethodName(type);
-                if (methodName != null) {
-                    fCallTypes.remove(methodName);
-                }
-            }
-        }
-    };
+    private int fIdCounter = 0;
 
     private IRpcMessenger.IMessageListener fMessageListener = new IRpcMessenger.IMessageListener() {
         public void onMessage(RpcObject message) {
             RpcObject obj = RpcObject.toRpcObject(message);
-            if (obj instanceof RpcRequest) {
-                RpcRequest request = (RpcRequest) obj;
-                handleExternalCall(request);
-            } else if (obj instanceof RpcResponse) {
+            if (obj instanceof RpcResponse) {
                 RpcResponse resp = (RpcResponse) obj;
                 handleExternalResponses(resp);
+            } else {
+                RpcRequest request = (obj instanceof RpcRequest)
+                    ? (RpcRequest) obj
+                    : new RpcRequest().<RpcRequest> setId(newRequestId());
+                handleExternalCall(request);
             }
         }
     };
+
+    private IRpcCallBuilder fRpcCallBuilder;
 
     private IEventListener<RpcCall> fRpcCallListener = new CallListener<RpcCall>() {
         @Override
@@ -225,24 +200,13 @@ public class RpcCallsDispatcher {
     public RpcCallsDispatcher() {
     }
 
-    @SuppressWarnings("unchecked")
-    private <E> Class<? extends RpcCall> castEventType(final Class<E> eventType) {
-        Class<? extends RpcCall> type = (Class<? extends RpcCall>) eventType;
-        return type;
+    protected RpcCall createEvent(RpcRequest request) throws Exception {
+        RpcCall call = fRpcCallBuilder.newRpcCall(request);
+        return call;
     }
 
-    protected RpcCall createEvent(RpcRequest request) throws Exception {
-        String methodName = request.getMethod();
-        Class<?> type = getEventType(methodName);
-        if (type == null) {
-            return null;
-        }
-        Constructor<?> constructor = type.getConstructor(RpcRequest.class);
-        if (constructor == null) {
-            return null;
-        }
-        RpcCall event = (RpcCall) constructor.newInstance(request);
-        return event;
+    public void done() {
+        fEventManager.removeListener(fCallType, fRpcCallListener);
     }
 
     /**
@@ -256,21 +220,6 @@ public class RpcCallsDispatcher {
         synchronized (fCalls) {
             return fCalls.remove(requestId);
         }
-    }
-
-    protected Class<?> getEventType(String methodName) {
-        return fCallTypes.get(methodName);
-    }
-
-    /**
-     * This method translates types of events in corresponding RPC method names.
-     * It can be overloaded in subclasses.
-     * 
-     * @param type the type of the event
-     * @return an RPC method name corresponding to the specified event type
-     */
-    protected String getMethodName(Class<? extends RpcCall> type) {
-        return RpcCall.getMethodName(type);
     }
 
     /**
@@ -321,12 +270,26 @@ public class RpcCallsDispatcher {
         }
     }
 
-    public void init(IEventManager manager, IRpcMessenger messenger) {
+    public void init(
+        Class<? extends RpcCall> callType,
+        IRpcCallBuilder callBuilder,
+        IEventManager manager,
+        IRpcMessenger messenger) {
+        fCallType = callType;
+        fRpcCallBuilder = callBuilder;
         fEventManager = manager;
         fRpcMessenger = messenger;
-        fEventManager.addListener(RpcCall.class, fRpcCallListener);
-        fEventManager.addListenerInterceptor(fListenerInterceptor);
+        fEventManager.addListener(fCallType, fRpcCallListener);
         fRpcMessenger.setMessageListener(fMessageListener);
+    }
+
+    public void init(IEventManager manager, IRpcMessenger messenger) {
+        RpcCallBuilder builder = new RpcCallBuilder(manager);
+        init(RpcCall.class, builder, manager, messenger);
+    }
+
+    public synchronized String newRequestId() {
+        return fIdBase + (fIdCounter++);
     }
 
     /**
