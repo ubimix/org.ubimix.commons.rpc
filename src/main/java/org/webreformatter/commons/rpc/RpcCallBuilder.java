@@ -85,13 +85,19 @@ public class RpcCallBuilder implements IRpcCallBuilder {
         String methodName = request.getMethod();
         Class<?> type = getEventType(methodName);
         if (type != null) {
-            Constructor<?> constructor = type.getConstructor(RpcRequest.class);
-            if (constructor != null) {
+            try {
+                Constructor<?> constructor = type
+                    .getConstructor(RpcRequest.class);
                 result = (RpcCall) constructor.newInstance(request);
-            } else {
-                constructor = type.getConstructor();
-                result = (RpcCall) constructor.newInstance();
-                result.setRequest(request);
+            } catch (NoSuchMethodException e) {
+            }
+            if (result == null) {
+                try {
+                    Constructor<?> constructor = type.getConstructor();
+                    result = (RpcCall) constructor.newInstance();
+                    result.setRequest(request);
+                } catch (NoSuchMethodException e) {
+                }
             }
         }
         return result;

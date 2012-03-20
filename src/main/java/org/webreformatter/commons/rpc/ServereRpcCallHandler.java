@@ -45,8 +45,9 @@ public class ServereRpcCallHandler implements IRpcCallHandler {
                         callback.finish(response);
                     }
                 });
+            } else {
+                error = RpcCall.newMethodNotFoundError();
             }
-            error = RpcCall.newMethodNotFoundError();
         } catch (Throwable t) {
             error = RpcCall.getError(t);
         }

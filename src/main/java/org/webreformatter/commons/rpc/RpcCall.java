@@ -4,6 +4,7 @@ import org.webreformatter.commons.events.calls.CallEvent;
 import org.webreformatter.commons.json.JsonArray;
 import org.webreformatter.commons.json.JsonObject;
 import org.webreformatter.commons.json.JsonValue;
+import org.webreformatter.commons.json.JsonValue.IJsonValueFactory;
 import org.webreformatter.commons.json.rpc.RpcError;
 import org.webreformatter.commons.json.rpc.RpcRequest;
 import org.webreformatter.commons.json.rpc.RpcResponse;
@@ -226,6 +227,24 @@ public abstract class RpcCall extends CallEvent<RpcRequest, RpcResponse> {
     public JsonObject getResultObject() {
         RpcResponse response = getResponse();
         return response != null ? response.getResultObject() : null;
+    }
+
+    /**
+     * Returns the resulting object. This method returns <code>null</code> if
+     * this call is not finished yet (if the {@link CallEvent#reply(Object)} was
+     * not called yet).
+     * 
+     * @param factory the factory used to transform the result to the required
+     *        type
+     * @return the result of this call
+     */
+    public <T extends JsonValue> T getResultObject(IJsonValueFactory<T> factory) {
+        T result = null;
+        RpcResponse response = getResponse();
+        if (response != null) {
+            result = response.getResult(factory);
+        }
+        return result;
     }
 
     /**
