@@ -42,6 +42,7 @@ public class RpcCallTestUtil {
      * sinks the client-server communication channel).
      */
     public RpcCallTestUtil() {
+        fServerEventManager = newServerEventManager(fServerListenerRegistry);
         /*
          * A call builder used to re-create {@link RpcCall} instances on the
          * server side.
