@@ -48,7 +48,7 @@ public class RpcCallTestUtil {
          * server side.
          */
         RpcCallBuilder callBuilder = new RpcCallBuilder(fServerListenerRegistry);
-        final ServereRpcCallHandler serverHandler = new ServereRpcCallHandler(
+        final ServerRpcCallHandler serverHandler = new ServerRpcCallHandler(
             fServerEventManager,
             callBuilder);
         fClientEventManager = newClientEventManager();

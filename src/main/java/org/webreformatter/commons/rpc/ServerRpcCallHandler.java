@@ -13,7 +13,7 @@ import org.webreformatter.commons.json.rpc.RpcResponse;
 /**
  * @author kotelnikov
  */
-public class ServereRpcCallHandler implements IRpcCallHandler {
+public class ServerRpcCallHandler implements IRpcCallHandler {
 
     private IRpcCallBuilder fCallBuilder;
 
@@ -22,7 +22,7 @@ public class ServereRpcCallHandler implements IRpcCallHandler {
     /**
      * 
      */
-    public ServereRpcCallHandler(
+    public ServerRpcCallHandler(
         IEventManager eventManager,
         IRpcCallBuilder callBuilder) {
         fEventManager = eventManager;
