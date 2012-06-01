@@ -1,0 +1,5 @@
+<module>
+    <source path="rpc">
+        <exclude name="**/ServerRpcCallHandler.*" />
+    </source>
+</module>
