@@ -1,5 +1,8 @@
 <module>
     <source path="rpc">
         <exclude name="**/ServerRpcCallHandler.*" />
+
+        <!-- Do not remove! This package is defined in a separate project. -->
+        <exclude name="**/servlet/**" />
     </source>
 </module>
