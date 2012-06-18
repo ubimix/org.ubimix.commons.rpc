@@ -243,9 +243,7 @@ public abstract class RpcCall extends CallEvent<RpcRequest, RpcResponse> {
      */
     public void reply(JsonValue result) {
         RpcRequest request = getRequest();
-        super.reply(new RpcResponse()
-            .<RpcResponse> setId(request.getId())
-            .<RpcResponse> setResult(result));
+        super.reply(new RpcResponse(request).setResult(result));
     }
 
     /**
@@ -256,9 +254,8 @@ public abstract class RpcCall extends CallEvent<RpcRequest, RpcResponse> {
      * @param error the error used as an error.
      */
     public void setError(RpcError error) {
-        JsonObject json = new JsonObject();
-        json.setValue("error", error);
-        reply(json);
+        RpcRequest request = getRequest();
+        super.reply(new RpcResponse(request).setError(error));
     }
 
     /**
