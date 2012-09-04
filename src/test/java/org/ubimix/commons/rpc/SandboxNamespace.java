@@ -1,10 +1,10 @@
 /**
  * 
  */
-package org.webreformatter.commons.rpc;
+package org.ubimix.commons.rpc;
 
-import org.webreformatter.commons.json.JsonValue;
-import org.webreformatter.commons.json.rpc.RpcRequest;
+import org.ubimix.commons.json.JsonValue;
+import org.ubimix.commons.json.rpc.RpcRequest;
 
 /**
  * @author kotelnikov

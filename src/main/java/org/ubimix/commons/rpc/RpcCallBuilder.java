@@ -1,14 +1,14 @@
-package org.webreformatter.commons.rpc;
+package org.ubimix.commons.rpc;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.webreformatter.commons.events.EventListenerInterceptor;
-import org.webreformatter.commons.events.IEventListener;
-import org.webreformatter.commons.events.IEventListenerInterceptor;
-import org.webreformatter.commons.events.IEventListenerRegistry;
-import org.webreformatter.commons.json.rpc.RpcRequest;
+import org.ubimix.commons.events.EventListenerInterceptor;
+import org.ubimix.commons.events.IEventListener;
+import org.ubimix.commons.events.IEventListenerInterceptor;
+import org.ubimix.commons.events.IEventListenerRegistry;
+import org.ubimix.commons.json.rpc.RpcRequest;
 
 /**
  * @author kotelnikov
@@ -26,8 +26,8 @@ public class RpcCallBuilder implements IRpcCallBuilder {
         }
 
         /**
-         * @see org.webreformatter.commons.events.IEventListenerInterceptor#onAddListener(java.lang.Class,
-         *      org.webreformatter.commons.events.IEventListener)
+         * @see org.ubimix.commons.events.IEventListenerInterceptor#onAddListener(java.lang.Class,
+         *      org.ubimix.commons.events.IEventListener)
          */
         @Override
         public void onAddListener(Class<?> eventType, IEventListener<?> listener) {
@@ -41,8 +41,8 @@ public class RpcCallBuilder implements IRpcCallBuilder {
         }
 
         /**
-         * @see org.webreformatter.commons.events.IEventListenerInterceptor#onRemoveListener(java.lang.Class,
-         *      org.webreformatter.commons.events.IEventListener)
+         * @see org.ubimix.commons.events.IEventListenerInterceptor#onRemoveListener(java.lang.Class,
+         *      org.ubimix.commons.events.IEventListener)
          */
         @Override
         public void onRemoveListener(
@@ -78,7 +78,7 @@ public class RpcCallBuilder implements IRpcCallBuilder {
     }
 
     /**
-     * @see org.webreformatter.commons.rpc.IRpcCallBuilder#newRpcCall(org.webreformatter.commons.json.rpc.RpcRequest)
+     * @see org.ubimix.commons.rpc.IRpcCallBuilder#newRpcCall(org.ubimix.commons.json.rpc.RpcRequest)
      */
     public RpcCall newRpcCall(RpcRequest request) throws Exception {
         RpcCall result = null;

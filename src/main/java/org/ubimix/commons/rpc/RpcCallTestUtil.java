@@ -1,12 +1,12 @@
-package org.webreformatter.commons.rpc;
+package org.ubimix.commons.rpc;
 
-import org.webreformatter.commons.events.EventListenerRegistry;
-import org.webreformatter.commons.events.EventManager;
-import org.webreformatter.commons.events.IEventListenerRegistry;
-import org.webreformatter.commons.events.IEventManager;
-import org.webreformatter.commons.json.rpc.IRpcCallHandler;
-import org.webreformatter.commons.json.rpc.RpcRequest;
-import org.webreformatter.commons.json.rpc.RpcResponse;
+import org.ubimix.commons.events.EventListenerRegistry;
+import org.ubimix.commons.events.EventManager;
+import org.ubimix.commons.events.IEventListenerRegistry;
+import org.ubimix.commons.events.IEventManager;
+import org.ubimix.commons.json.rpc.IRpcCallHandler;
+import org.ubimix.commons.json.rpc.RpcRequest;
+import org.ubimix.commons.json.rpc.RpcResponse;
 
 /**
  * This is an test utility class creating and sinking "client" and "server"-side

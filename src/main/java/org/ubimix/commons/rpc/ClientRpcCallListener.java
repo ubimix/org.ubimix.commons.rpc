@@ -1,13 +1,13 @@
 /**
  * 
  */
-package org.webreformatter.commons.rpc;
+package org.ubimix.commons.rpc;
 
-import org.webreformatter.commons.events.calls.CallListener;
-import org.webreformatter.commons.json.rpc.IRpcCallHandler;
-import org.webreformatter.commons.json.rpc.IRpcCallHandler.IRpcCallback;
-import org.webreformatter.commons.json.rpc.RpcRequest;
-import org.webreformatter.commons.json.rpc.RpcResponse;
+import org.ubimix.commons.events.calls.CallListener;
+import org.ubimix.commons.json.rpc.IRpcCallHandler;
+import org.ubimix.commons.json.rpc.IRpcCallHandler.IRpcCallback;
+import org.ubimix.commons.json.rpc.RpcRequest;
+import org.ubimix.commons.json.rpc.RpcResponse;
 
 /**
  * @author kotelnikov

@@ -1,6 +1,6 @@
-package org.webreformatter.commons.rpc;
+package org.ubimix.commons.rpc;
 
-import org.webreformatter.commons.json.rpc.RpcRequest;
+import org.ubimix.commons.json.rpc.RpcRequest;
 
 /**
  * Instances of this type are used to create new RpcCall objects using the

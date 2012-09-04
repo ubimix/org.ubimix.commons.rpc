@@ -1,16 +1,16 @@
 /**
  * 
  */
-package org.webreformatter.commons.rpc;
+package org.ubimix.commons.rpc;
 
 import junit.framework.TestCase;
 
-import org.webreformatter.commons.events.EventManager;
-import org.webreformatter.commons.events.IEventManager;
-import org.webreformatter.commons.events.calls.CallListener;
-import org.webreformatter.commons.json.JsonObject;
-import org.webreformatter.commons.rpc.RpcCallsDispatcher.RpcMessenger;
-import org.webreformatter.commons.rpc.SandboxNamespace.SayHello;
+import org.ubimix.commons.events.EventManager;
+import org.ubimix.commons.events.IEventManager;
+import org.ubimix.commons.events.calls.CallListener;
+import org.ubimix.commons.json.JsonObject;
+import org.ubimix.commons.rpc.RpcCallsDispatcher.RpcMessenger;
+import org.ubimix.commons.rpc.SandboxNamespace.SayHello;
 
 /**
  * @author kotelnikov

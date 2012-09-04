@@ -1,13 +1,13 @@
-package org.webreformatter.commons.rpc;
+package org.ubimix.commons.rpc;
 
-import org.webreformatter.commons.events.calls.CallEvent;
-import org.webreformatter.commons.json.JsonArray;
-import org.webreformatter.commons.json.JsonObject;
-import org.webreformatter.commons.json.JsonValue;
-import org.webreformatter.commons.json.JsonValue.IJsonValueFactory;
-import org.webreformatter.commons.json.rpc.RpcError;
-import org.webreformatter.commons.json.rpc.RpcRequest;
-import org.webreformatter.commons.json.rpc.RpcResponse;
+import org.ubimix.commons.events.calls.CallEvent;
+import org.ubimix.commons.json.JsonArray;
+import org.ubimix.commons.json.JsonObject;
+import org.ubimix.commons.json.JsonValue;
+import org.ubimix.commons.json.JsonValue.IJsonValueFactory;
+import org.ubimix.commons.json.rpc.RpcError;
+import org.ubimix.commons.json.rpc.RpcRequest;
+import org.ubimix.commons.json.rpc.RpcResponse;
 
 /**
  * This is a common super-class for all remote (RPC) call events.

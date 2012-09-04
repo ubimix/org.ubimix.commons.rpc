@@ -3,24 +3,25 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.webreformatter.commons</groupId>
-        <artifactId>org.webreformatter.commons.poms</artifactId>
-        <version>1.2.0</version>
+        <groupId>org.ubimix.poms</groupId>
+        <artifactId>org.ubimix.poms.bundle</artifactId>
+        <version>1.2.1</version>
     </parent>
-    <groupId>org.webreformatter.commons</groupId>
-    <artifactId>org.webreformatter.commons.rpc</artifactId>
+    <groupId>org.ubimix.commons</groupId>
+    <artifactId>org.ubimix.commons.rpc</artifactId>
     <packaging>bundle</packaging>
     <name>${project.artifactId}</name>
+    <version>1.2.1</version>
     <dependencies>
         <dependency>
-            <groupId>org.webreformatter.commons</groupId>
-            <artifactId>org.webreformatter.commons.json</artifactId>
-            <version>1.2.0</version>
+            <groupId>org.ubimix.commons</groupId>
+            <artifactId>org.ubimix.commons.json</artifactId>
+            <version>1.2.1</version>
         </dependency>
         <dependency>
-            <groupId>org.webreformatter.commons</groupId>
-            <artifactId>org.webreformatter.commons.events</artifactId>
-            <version>1.2.0</version>
+            <groupId>org.ubimix.commons</groupId>
+            <artifactId>org.ubimix.commons.events</artifactId>
+            <version>1.2.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

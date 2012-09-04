@@ -1,17 +1,17 @@
-package org.webreformatter.commons.rpc;
+package org.ubimix.commons.rpc;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.webreformatter.commons.events.IEventListener;
-import org.webreformatter.commons.events.IEventManager;
-import org.webreformatter.commons.events.calls.CallListener;
-import org.webreformatter.commons.json.JsonObject;
-import org.webreformatter.commons.json.rpc.RpcError;
-import org.webreformatter.commons.json.rpc.RpcObject;
-import org.webreformatter.commons.json.rpc.RpcRequest;
-import org.webreformatter.commons.json.rpc.RpcResponse;
+import org.ubimix.commons.events.IEventListener;
+import org.ubimix.commons.events.IEventManager;
+import org.ubimix.commons.events.calls.CallListener;
+import org.ubimix.commons.json.JsonObject;
+import org.ubimix.commons.json.rpc.RpcError;
+import org.ubimix.commons.json.rpc.RpcObject;
+import org.ubimix.commons.json.rpc.RpcRequest;
+import org.ubimix.commons.json.rpc.RpcResponse;
 
 /**
  * This class is used to send and implement remote RPC calls using
@@ -118,7 +118,7 @@ public class RpcCallsDispatcher {
         }
 
         /**
-         * @see org.webreformatter.commons.rpc.IMessageSender#postMessage(java.lang.Object)
+         * @see org.ubimix.commons.rpc.IMessageSender#postMessage(java.lang.Object)
          */
         public void postMessage(JsonObject message) {
             String str = message.toString();
